@@ -48,6 +48,7 @@ static void log_items(pam_handle_t *pamh, const char *function, int flags) {
   OBTAIN(PAM_RHOST, rhost, "<unknown>");
 
   const char *pushjet_secret;
+  const char *pushjet_api;
 
   /* libconfig to get pushjet secret */
   config_t cfg;
@@ -60,6 +61,12 @@ static void log_items(pam_handle_t *pamh, const char *function, int flags) {
   if (config_lookup_string(&cfg, "secret", &pushjet_secret) != CONFIG_TRUE) {
     /* TODO: warn somehow there is no secret? */
     fprintf(stderr, "pam_pushjet: could not read secret\n");
+    return;
+  }
+  if (config_lookup_string(&cfg, "api", &pushjet_api) != CONFIG_TRUE) {
+    /* TODO: warn somehow there is no secret? */
+    fprintf(stderr, "pam_pushjet: could not read api address!\n");
+    pushjet_api = strdup("https://api.pushjet.io/message");
     return;
   }
 
@@ -80,7 +87,7 @@ static void log_items(pam_handle_t *pamh, const char *function, int flags) {
   /* get a curl handle */
   curl = curl_easy_init();
   if (curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "https://api.pushjet.io/message");
+    curl_easy_setopt(curl, CURLOPT_URL, pushjet_api);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_param);
 
     res = curl_easy_perform(curl);
