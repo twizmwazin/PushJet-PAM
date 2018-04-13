@@ -1,0 +1,25 @@
+pam_pushjet - A PAM module to notify usre logins via PushJet
+
+To build and install:
+$ make
+$ sudo make install
+
+Before enabling the module, make sure to have a PushJet service, and place the
+secret key in /etc/pam_pushjet. The file should look like this:
+
+secret = "<your secret here>";
+
+libconfig used to read the config file.
+
+To enable the module, add it to the appropriate file in /etc/pam.d/.
+Add a line like this:
+
+account required pam_pushjet.so
+
+This module is freely avialable under the GPLv3 or any future revision
+published by the Free Software Foundation. For more information, see LICENSE.
+
+This module was originally based on pam_warn by Andrew G. Morgan
+<morgan@kernel.org>. Many thanks to him and all other PAM contributors.
+pam_warn is available under the BSD-3 license at http://www.linux-pam.org/
+
